@@ -20,6 +20,7 @@ def upload(files: List[UploadFile] = File(...)):
     images = [np.array(Image.open(file.file)) for file in files]
     prediction = pipeline.recognize(images)
     st.write("Success")
+    return "IAMALIVE"
 
 
 if __name__ == "__main__":
