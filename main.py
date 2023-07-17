@@ -1,8 +1,26 @@
-import streamlit as st
+
+from typing import List
+import uvicorn
+from fastapi import File, FastAPI, UploadFile
+import numpy as np
 import keras_ocr
-pipeline = keras_ocr.pipeline.Pipeline()
-p = "img.jpg"
-images = [keras_ocr.tools.read(p)]
-prediction = pipeline.recognize(images)
-st.write("Success")
-print("hello")
+import streamlit as st
+
+app = FastAPI()
+
+
+@app.get("/")
+def read_root():
+    return {"message": "Welcome from the API"}
+
+
+@app.post("/ocr")
+def upload(files: List[UploadFile] = File(...)):
+    pipeline = keras_ocr.pipeline.Pipeline()
+    images = [np.array(Image.open(file.file)) for file in files]
+    prediction = pipeline.recognize(images)
+    st.write("Success")
+
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8080)
